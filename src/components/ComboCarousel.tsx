@@ -3,8 +3,10 @@ import type { TouchEvent, WheelEvent } from "react";
 import { Box, Button, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import type { ColorCombo } from "../types";
+import type { CardTopRightAction } from "./CardTopRightButton";
 import { ColorComboCard } from "./ColorComboCard";
 
 const CARD_WIDTH = "clamp(260px, 32vw, 380px)";
@@ -14,10 +16,16 @@ const WHEEL_COOLDOWN_MS = 400;
 const WHEEL_THRESHOLD = 12;
 const SWIPE_THRESHOLD = 40;
 
-export const ComboCarousel: React.FC<{ combos: ColorCombo[]; onRandomize: () => void }> = ({
-  combos,
-  onRandomize,
-}) => {
+export const ComboCarousel: React.FC<{
+  combos: ColorCombo[];
+  mode: "random" | "favorites";
+  onRandomize: () => void;
+  onShowFavorites: () => void;
+  hasFavorites: boolean;
+  isFavorite: (combo: ColorCombo) => boolean;
+  onToggleFavorite: (combo: ColorCombo) => void;
+  onRemoveFavorite: (combo: ColorCombo) => void;
+}> = ({ combos, mode, onRandomize, onShowFavorites, hasFavorites, isFavorite, onToggleFavorite, onRemoveFavorite }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const lastWheelTime = useRef(0);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -82,6 +90,10 @@ export const ComboCarousel: React.FC<{ combos: ColorCombo[]; onRandomize: () => 
           const scale = Math.max(0.5, 1 - distance * 0.16);
           const opacity = Math.max(0, 1 - distance * 0.35);
           const brightness = Math.max(0.35, 1 - distance * 0.22);
+          const topRightAction: CardTopRightAction =
+            mode === "favorites"
+              ? { type: "remove", onClick: () => onRemoveFavorite(combo) }
+              : { type: "favorite", isFavorite: isFavorite(combo), onClick: () => onToggleFavorite(combo) };
 
           return (
             <Box
@@ -101,31 +113,60 @@ export const ComboCarousel: React.FC<{ combos: ColorCombo[]; onRandomize: () => 
               }}
             >
               <Box sx={{ width: "100%", height: "100%", cursor: offset === 0 ? "default" : "pointer" }}>
-                <ColorComboCard combo={combo} index={index} onClick={() => goToIndex(index)} />
+                <ColorComboCard
+                  combo={combo}
+                  index={index}
+                  onClick={() => goToIndex(index)}
+                  topRightAction={topRightAction}
+                />
               </Box>
             </Box>
           );
         })}
       </Box>
 
-      <Button
-        onClick={onRandomize}
-        startIcon={<ShuffleIcon />}
-        variant="contained"
+      <Box
         sx={{
           position: "fixed",
           top: { xs: 16, sm: 32 },
           left: "50%",
           transform: "translateX(-50%)",
-          bgcolor: "rgba(255,255,255,0.15)",
-          color: "#fff",
-          backdropFilter: "blur(6px)",
-          textTransform: "none",
-          "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
+          display: "flex",
+          flexDirection: "row",
+          gap: 1.5,
         }}
       >
-        Randomize
-      </Button>
+        <Button
+          onClick={onRandomize}
+          startIcon={<ShuffleIcon />}
+          variant="contained"
+          sx={{
+            bgcolor: mode === "random" ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.15)",
+            color: "#fff",
+            backdropFilter: "blur(6px)",
+            textTransform: "none",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
+          }}
+        >
+          Randomize
+        </Button>
+        {hasFavorites && (
+          <Button
+            onClick={onShowFavorites}
+            startIcon={<FavoriteIcon />}
+            variant="contained"
+            sx={{
+              bgcolor: mode === "favorites" ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.15)",
+              color: "#fff",
+              backdropFilter: "blur(6px)",
+              textTransform: "none",
+              "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
+            }}
+          >
+            Favorites
+          </Button>
+        )}
+      </Box>
 
       <IconButton
         onClick={() => goToIndex(activeIndex - 1)}
