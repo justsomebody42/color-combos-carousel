@@ -4,6 +4,7 @@ import { Box, Button, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import type { ColorCombo } from "../types";
 import type { CardTopRightAction } from "./CardTopRightButton";
@@ -15,6 +16,7 @@ const DEPTH_STEP_PX = 160;
 const WHEEL_COOLDOWN_MS = 400;
 const WHEEL_THRESHOLD = 12;
 const SWIPE_THRESHOLD = 40;
+const GITHUB_REPO_URL = "https://github.com/justsomebody42/color-combos-carousel";
 
 export const ComboCarousel: React.FC<{
   combos: ColorCombo[];
@@ -206,24 +208,46 @@ export const ComboCarousel: React.FC<{
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
-          flexDirection: "row",
-          gap: 1,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1.5,
         }}
       >
-        {combos.map((_, index) => (
-          <Box
-            key={index}
-            onClick={() => goToIndex(index)}
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              bgcolor: index === activeIndex ? "#fff" : "rgba(255,255,255,0.4)",
-              cursor: "pointer",
-              transition: "background-color 0.2s ease",
-            }}
-          />
-        ))}
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+          {combos.map((_, index) => (
+            <Box
+              key={index}
+              onClick={() => goToIndex(index)}
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: index === activeIndex ? "#fff" : "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                transition: "background-color 0.2s ease",
+              }}
+            />
+          ))}
+        </Box>
+        <Box
+          component="a"
+          href={GITHUB_REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 0.75,
+            color: "rgba(255,255,255,0.6)",
+            textDecoration: "none",
+            fontSize: 13,
+            "&:hover": { color: "#fff" },
+          }}
+        >
+          <GitHubIcon fontSize="small" />
+          View on GitHub
+        </Box>
       </Box>
     </Box>
   );

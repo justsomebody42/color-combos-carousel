@@ -28,3 +28,11 @@ To build and run the image locally instead of pulling from the registry:
 docker build -t color-combos-carousel .
 docker run -p 8080:8080 color-combos-carousel
 ```
+
+## AI disclaimer
+
+AI tools were used to assist with development.
+
+## License
+
+Licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). You may freely use, modify, and redistribute this project for non-commercial purposes (personal, educational, hobby, etc.), provided you retain the required copyright notice (see [LICENSE](LICENSE)). Commercial use requires a separate agreement.
