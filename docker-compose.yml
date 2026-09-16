@@ -1,0 +1,7 @@
+services:
+  color-combos-carousel:
+    image: ghcr.io/justsomebody42/color-combos-carousel:latest
+    container_name: color-combos-carousel
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:${EXPOSED_PORT:-8080}"
