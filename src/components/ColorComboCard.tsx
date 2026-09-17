@@ -1,5 +1,6 @@
-import { Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import type { ColorCombo } from "../types";
+import { CardCopyButton } from "./CardCopyButton";
 import { CardTopRightButton } from "./CardTopRightButton";
 import type { CardTopRightAction } from "./CardTopRightButton";
 import { ColorHalf } from "./ColorHalf";
@@ -27,6 +28,19 @@ export const ColorComboCard: React.FC<{
     <ColorHalf textColor={combo.b.value} name={combo.a.name} hex={combo.a.value} />
     <ColorHalf textColor={combo.a.value} name={combo.b.name} hex={combo.b.value} />
     <ComboNumber index={index} />
-    {topRightAction && <CardTopRightButton action={topRightAction} />}
+    <Box
+      sx={{
+        position: "absolute",
+        top: 8,
+        right: 8,
+        zIndex: 1,
+        display: "flex",
+        flexDirection: "row",
+        gap: 1,
+      }}
+    >
+      <CardCopyButton combo={combo} />
+      {topRightAction && <CardTopRightButton action={topRightAction} />}
+    </Box>
   </Paper>
 );

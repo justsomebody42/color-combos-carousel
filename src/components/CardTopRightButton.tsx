@@ -18,10 +18,6 @@ export const CardTopRightButton: React.FC<{ action: CardTopRightAction }> = ({ a
     <IconButton
       onClick={handleClick}
       sx={{
-        position: "absolute",
-        top: 8,
-        right: 8,
-        zIndex: 1,
         color: "#fff",
         bgcolor: "rgba(0,0,0,0.25)",
         "&:hover": { bgcolor: "rgba(0,0,0,0.4)" },
