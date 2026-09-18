@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { TouchEvent, WheelEvent } from "react";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import ShuffleIcon from "@mui/icons-material/Shuffle";
 import type { ColorCombo } from "../types";
 import type { CardTopRightAction } from "./CardTopRightButton";
 import { ColorComboCard } from "./ColorComboCard";
+import { ComboToolbar } from "./ComboToolbar";
 
 const CARD_WIDTH = "clamp(260px, 32vw, 380px)";
 const CARD_STEP_RATIO = 0.62;
@@ -21,13 +20,26 @@ const GITHUB_REPO_URL = "https://github.com/justsomebody42/color-combos-carousel
 export const ComboCarousel: React.FC<{
   combos: ColorCombo[];
   mode: "random" | "favorites";
+  viewMode: "carousel" | "grid";
   onRandomize: () => void;
   onShowFavorites: () => void;
   hasFavorites: boolean;
   isFavorite: (combo: ColorCombo) => boolean;
   onToggleFavorite: (combo: ColorCombo) => void;
   onRemoveFavorite: (combo: ColorCombo) => void;
-}> = ({ combos, mode, onRandomize, onShowFavorites, hasFavorites, isFavorite, onToggleFavorite, onRemoveFavorite }) => {
+  onToggleViewMode: () => void;
+}> = ({
+  combos,
+  mode,
+  viewMode,
+  onRandomize,
+  onShowFavorites,
+  hasFavorites,
+  isFavorite,
+  onToggleFavorite,
+  onRemoveFavorite,
+  onToggleViewMode,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const lastWheelTime = useRef(0);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -127,48 +139,14 @@ export const ComboCarousel: React.FC<{
         })}
       </Box>
 
-      <Box
-        sx={{
-          position: "fixed",
-          top: { xs: 16, sm: 32 },
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "row",
-          gap: 1.5,
-        }}
-      >
-        <Button
-          onClick={onRandomize}
-          startIcon={<ShuffleIcon />}
-          variant="contained"
-          sx={{
-            bgcolor: mode === "random" ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.15)",
-            color: "#fff",
-            backdropFilter: "blur(6px)",
-            textTransform: "none",
-            "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
-          }}
-        >
-          Randomize
-        </Button>
-        {hasFavorites && (
-          <Button
-            onClick={onShowFavorites}
-            startIcon={<FavoriteIcon />}
-            variant="contained"
-            sx={{
-              bgcolor: mode === "favorites" ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.15)",
-              color: "#fff",
-              backdropFilter: "blur(6px)",
-              textTransform: "none",
-              "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
-            }}
-          >
-            Favorites
-          </Button>
-        )}
-      </Box>
+      <ComboToolbar
+        mode={mode}
+        viewMode={viewMode}
+        onRandomize={onRandomize}
+        onShowFavorites={onShowFavorites}
+        hasFavorites={hasFavorites}
+        onToggleViewMode={onToggleViewMode}
+      />
 
       <IconButton
         onClick={() => goToIndex(activeIndex - 1)}
